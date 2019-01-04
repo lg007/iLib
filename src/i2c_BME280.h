@@ -117,7 +117,7 @@ private:
 
 public:
 
-    BMP280(void) :  dig_T1(0), dig_P1(0), dig_T2(0), dig_T3(0), dig_P2(0), dig_P3(0), dig_P4(0), dig_P5(0), dig_P6(0), dig_P7(0), dig_P8(0), dig_P9(0), tFine(0)
+    BME280(void) :  dig_T1(0), dig_P1(0), dig_T2(0), dig_T3(0), dig_P2(0), dig_P3(0), dig_P4(0), dig_P5(0), dig_P6(0), dig_P7(0), dig_P8(0), dig_P9(0), dig_H1(0), dig_H2(0), dig_H3(0), dig_H4(0), dig_H5(0), dig_H6(0), tFine(0)
     {
     };
 
@@ -344,6 +344,31 @@ public:
         getTemperature(iTemperature);
         celsius = float(iTemperature) / 1000;
     };
+    
+    void getHumidity(float& rh)
+    //       ( int32_t raw, int32_t t_fine)
+   {
+   // Code based on calibration algorthim provided by Bosch.
+   int32_t var1;
+   uint8_t   dig_H1 =   m_dig[24];
+   int16_t dig_H2 = (m_dig[26] << 8) | m_dig[25];
+   uint8_t   dig_H3 =   m_dig[27];
+   int16_t dig_H4 = (m_dig[28] << 4) | (0x0F & m_dig[29]);
+   int16_t dig_H5 = (m_dig[30] << 4) | ((m_dig[29] >> 4) & 0x0F);
+   int8_t   dig_H6 =   m_dig[31];
+
+   var1 = (t_fine - ((int32_t)76800));
+   var1 = (((((raw << 14) - (((int32_t)dig_H4) << 20) - (((int32_t)dig_H5) * var1)) +
+   ((int32_t)16384)) >> 15) * (((((((var1 * ((int32_t)dig_H6)) >> 10) * (((var1 *
+   ((int32_t)dig_H3)) >> 11) + ((int32_t)32768))) >> 10) + ((int32_t)2097152)) *
+   ((int32_t)dig_H2) + 8192) >> 14));
+   var1 = (var1 - (((((var1 >> 15) * (var1 >> 15)) >> 7) * ((int32_t)dig_H1)) >> 4));
+   var1 = (var1 < 0 ? 0 : var1);
+   var1 = (var1 > 419430400 ? 419430400 : var1);
+   return ((uint32_t)(var1 >> 12))/1024.0;
+ }
+    
+    
 
 };
 
