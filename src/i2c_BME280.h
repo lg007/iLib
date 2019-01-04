@@ -97,11 +97,16 @@ private:
     static const uint8_t REG_CTRL_HUM				    =(0xF2);
     static const uint8_t REG_DIG_H1             =(0xA1);
     static const uint8_t REG_DIG_H2             =(0xE1);
-    static const uint8_t REG_DIG_H3             =(0xE3);  
+    static const uint8_t REG_DIG_H3             =(0xE3);
+    static const uint8_t REG_DIG_H4             =(0xE4);
+    static const uint8_t REG_DIG_H5             =(0xE5);
+    static const uint8_t REG_DIG_H6             =(0xE7);    
     
     // humidity variables:
-    int16_t     dig_H2;
-    unsigned char dig_H1, dig_H3; 
+    int16_t     dig_H2, dig_H4, dig_H5;
+    byte dig_H1, dig_H3; 
+    char dig_H6;
+    
     // humidity end--
     
     uint16_t    dig_T1, dig_P1;
